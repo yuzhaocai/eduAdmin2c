@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.class8.eduAdmin.dao.RoleResourceDao">
+	
+	<delete id="deleteRoleResourcesByRoleId" parameterType="int">
+		delete from edu_role_resource where role_id = #{roleId}
+	</delete>
+	
+	<delete id="deleteRoleResourcesByResourceIds" parameterType="list">
+		delete from edu_role_resource where 
+		<foreach collection="list" item="resourceId" separator="or">
+			resource_id = #{resourceId}
+		</foreach>
+	</delete>
+	
+	<select id="findResourceIdsByRoleId" parameterType="int" resultType="int">
+		select resource_id from edu_role_resource where role_id = #{roleId}
+	</select>
+	
+	<insert id="saveRoleResources" parameterType="list">
+		insert into edu_role_resource
+		(
+			role_id,resource_id
+		)
+		values
+		<foreach collection="list" item="roleResource" separator=",">
+			(
+				#{roleResource.roleId},#{roleResource.resourceId}
+			)
+		</foreach>
+	</insert>
+	
+</mapper>

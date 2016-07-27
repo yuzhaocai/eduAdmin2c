@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<!-- 为组件指定cacheManager，则自动为session和授权信息添加缓存 -->
+	 <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="sessionManager" ref="sessionManager"></property>
+        <property name="realm" ref="shiroDbRealm"/>
+        <!-- cacheManager使用ehcache来实现 -->
+        <property name="cacheManager" ref="ehcacheManager"></property>
+    </bean>
+  	
+  	<!-- 自定义EhcacheManager,覆盖默认的配置文件 -->
+    <bean id="ehcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManagerConfigFile" value="classpath:ehcache-shiro.xml"/>
+    </bean>
+    
+    
+    <!-- 自定义RedisCacheManager
+    <bean id="redisCacheManager" class="com.class8.eduAdmin.shiro.RedisCacheManager">
+    	<property name="client" ref="redisClientTemplate"></property>
+    </bean>
+     -->
+    
+    <!-- sessionDAO,默认使用的是MemorySessionDAO,将session放置在内存中,使用该sessionDAO,是为了将session放置到缓存中，默认的MemorySessionDAO是不使用缓存的，直接放置内存 -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO"></bean>
+    
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+   	 	<!-- 指定shiro中sessionid写入cookie中key的名称 ，避免404时出现SESSIONID丢失-->
+    	<property name="name" value="jsid"></property>
+    </bean>
+    
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+    	<!-- 表示间隔多久检查session的有效性,shiro默认会对stoped或expired的session进行删除 ，该值一般设置为和session的过期时间相同-->
+    	<property name="sessionValidationInterval" value="1800000"/>
+    	<!-- 默认的过期时间为30分钟 -->
+    	<property name="globalSessionTimeout" value="1800000"></property>
+    	<!-- 指定sessionDAO,将session存储在chcache缓存中,默认使用的是MemorySessionDAO,该sessionDAO默认不支持缓存，是使用内存 -->
+    	<property name="sessionDAO" ref="sessionDAO"></property>
+    	<!-- 指定sessionid的cookie模板 -->
+    	<property name="sessionIdCookie" ref="sessionIdCookie"></property>
+    </bean>
+   
+   	<!-- 自定义realm -->
+    <bean id="shiroDbRealm" class="com.class8.eduAdmin.shiro.ShiroDbRealm">
+    	<property name="authenticationCacheName" value="shiro.authenticationCache"></property>
+    	<property name="authorizationCacheName" value="shiro.authorizationCache"></property>
+    </bean>
+ 	
+ 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    
+    <!-- 启用Shiro权限验证注解的支持，需要借助SpringAOP扫描使用Shiro注解的类 -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    
+    <!-- 自定义authc,主要为了添加验证码，同时解决ajax请求用户未登录或超时返回json数据 -->
+    <bean id="captchaFormAuthenticationFilter" class="com.class8.eduAdmin.shiro.CaptchaFormAuthenticationFilter"></bean>
+    
+    <!-- 自定义perms,主要为了时间载ajax请求无权限时返回json数据 -->
+    <bean id="permissionsAuthorizationFilter" class="com.class8.eduAdmin.shiro.PermissionsAuthorizationFilter"></bean>
+    
+    <!-- 定义logout之后默认跳转到login页面 -->
+    <bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+    	<property name="redirectUrl" value="/login" />
+	</bean>
+	
+	<!-- 定义shiro的过滤器链 ，主要从数据库中加载和-->
+	<bean id="filterChainDefinitionMap" class="com.class8.eduAdmin.shiro.ChainDefinitionSectionMetaSource">
+		<!-- 配置没有加入到数据库中url对应的过滤器链的映射关系  -->
+		<property name="filterChainDefinitions">
+            <value>
+                /captacha = anon
+                /static/** = anon
+                /login = authc
+                /logout = logout
+                /** = authc
+            </value>
+		</property>	
+	</bean>
+ 	
+ 	<!-- shiroFilter定义，该id需要与web.xml中配置的shiroFilter的名称相同 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/login"/>
+        <property name="successUrl" value="/index"></property>
+        <property name="filters">
+        	<map>
+        		<entry key="authc" value-ref="captchaFormAuthenticationFilter"></entry>
+        		<entry key="perms" value-ref="permissionsAuthorizationFilter"></entry>
+        		<entry key="logout" value-ref="logoutFilter"></entry>
+        	</map>
+        </property>
+       	<property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"></property>
+    </bean>
+</beans>

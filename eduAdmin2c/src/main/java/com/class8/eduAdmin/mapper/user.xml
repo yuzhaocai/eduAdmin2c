@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.class8.eduAdmin.dao.UserDao">
+
+	<resultMap id="userResultMap" type="User">
+		<id property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="salt" column="salt"/>
+		<result property="password" column="password"/>
+		<result property="realname" column="realname"/>
+		<result property="email" column="email"/>
+		<result property="phone" column="phone"/>
+		<result property="status" column="status"/>
+		<result property="creator" column="creator"/>
+		<result property="createTime" column="create_time"/>
+		<result property="organizationId" column="organization_id"/>
+		<result property="delFlag" column="del_flag"/>
+		<collection property="roles" ofType="Role">
+			<id property="id" column="role_id"/>
+			<result property="name" column="role_name"/>
+			<result property="description" column="role_description"/>
+			<result property="creator" column="role_creator"/>
+			<result property="createTime" column="role_create_time"/>
+			<result property="lastmodified" column="role_lastmodified"/>
+		</collection>
+	</resultMap>
+
+	<insert id="saveUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+		insert into edu_user
+		(
+			username,salt,password,realname,email,phone,status,creator,create_time,organization_id
+		)
+		values
+		(
+			#{username},#{salt},#{password},#{realname},#{email},#{phone},#{status},#{creator},#{createTime},#{organizationId}
+		)
+	</insert>
+	
+	<select id="findUserByUsername" parameterType="string" resultType="User">
+		select id,username,salt,password,realname,email,phone,status,creator,create_time,lastmodified,organization_id,del_flag from edu_user where username = #{username} 
+	</select>
+	
+	<select id="countOfUser" resultType="int">
+		select count(id) from edu_user
+	</select>
+	
+	<select id="findUsersPage" resultType="User">
+		select 
+			id,username,salt,password,realname,email,phone,status,creator,create_time as createtime,lastmodified,organization_id as organizationid,del_flag as delflag
+		from edu_user
+		<if test="sort != null">
+			order by ${sort} ${order}
+		</if>
+		limit #{offset},#{rows}
+	</select>
+	
+	<select id="getUser" parameterType="int" resultType="User">
+		select id,username,salt,password,realname,email,phone,status,creator,create_time as createtime,lastmodified,organization_id as organizationid,del_flag as delflag from edu_user where id = #{userId}
+	</select>
+	
+	<update id="updateUser" parameterType="User">
+		update edu_user set realname = #{realname},organization_id = #{organizationId},email = #{email},phone = #{phone},status = #{status} where id = #{id}
+	</update>
+	
+	<select id="findAllUsers" resultType="User">
+		select 
+			id,username,realname,email,phone,status,creator,create_time as createtime,lastmodified,organization_id as organizationid,del_flag as delflag 
+		from edu_user 
+	</select>
+	
+	<delete id="deleteUser" parameterType="int">
+		delete from edu_user where id = #{userId}
+	</delete>
+	
+	<delete id="deleteUsers" parameterType="list">
+		delete from edu_user where 
+		<foreach collection="list" item="userId" separator="or">
+			id = #{userId}
+		</foreach>
+	</delete>
+	
+	<select id="findUsersByOrganizationId" parameterType="int" resultType="User">
+		select id,username,salt,password,realname,email,phone,status,creator,create_time as createtime,lastmodified,organization_id as organizationid,del_flag as delflag from edu_user where organization_id = #{organizationId}
+	</select>
+	
+</mapper>

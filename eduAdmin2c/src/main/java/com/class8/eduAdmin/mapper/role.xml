@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.class8.eduAdmin.dao.RoleDao">
+	
+	<select id="getRole" parameterType="int" resultType="Role">
+		select id,name,description,creator,create_time as createtime,lastmodified,del_flag as delflag from edu_role
+	</select>
+	
+	<delete id="deleteRole" parameterType="int">
+		delete from edu_role where id = #{roleId}
+	</delete>
+	
+	<select id="countOfRole" resultType="int">
+		select count(id) from edu_role
+	</select>
+	
+	<select id="findRole" resultType="Role">
+		select 
+			id,name,description,creator,create_time as createtime,lastmodified,del_flag as delflag 
+		from edu_role
+		<if test="sort != null">
+			order by ${sort} ${order}
+		</if>
+		limit #{offset},#{rows}
+	</select>
+	
+	<select id="findAllRoles" resultType="Role">
+		select
+			id,name,description,creator,create_time as createtime,lastmodified,del_flag as delflag 
+		from edu_role 
+	</select>
+	
+	<insert id="createRole" parameterType="Role">
+		insert into edu_role
+		(
+			name,description,creator,create_time
+		) 
+		values
+		(
+			#{name},#{description},#{creator},#{createTime}
+		)
+	</insert>
+	
+	<update id="updateRole" parameterType="Role">
+		update edu_role set name = #{name},description = #{description} where id = #{id}
+	</update>
+	
+	<select id="findRoles" parameterType="list" resultType="Role">
+		select
+			id,name,description,creator,create_time as createtime,lastmodified,del_flag as delflag 
+		from edu_role 
+		<where>
+			<foreach collection="list" item="roleId" separator="or">
+				id = #{roleId}
+			</foreach>
+		</where>
+	</select>
+</mapper>

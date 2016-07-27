@@ -1,0 +1,58 @@
+@CHARSET "UTF-8";
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote{margin:0;padding:0}
+body{line-height:1.16667}
+ol,ul{list-style:none}
+fieldset,img{border:0}
+address,caption,cite,code,dfn,em,i,strong,th,var,optgroup{font-style:normal;font-weight:normal}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}
+table{border-collapse:collapse;}/* tables still need 'cellspacing="0"' in the markup */
+/*caption,th{text-align:left}*/
+:focus{outline:0}/* remember to define focus styles! */
+abbr,acronym{border:0;font-variant:normal}
+sup{vertical-align:text-top}
+sub{vertical-align:text-bottom}
+blockquote:before,blockquote:after,q:before,q:after{content:""}
+blockquote,q{quotes:"" ""}
+input,button,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit}
+input,button,select,img{vertical-align:middle}
+textarea{vertical-align:top}
+/*to enable resizing for IE*/
+input,button,textarea,select{*font-size:100%}
+/*because legend doesn't inherit in IE */
+legend{color:#000}
+/* HTML5 display-role reset for older browsers */
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}
+/* =E html reset
+///////////////////////////////////////////// */
+
+/* =S type presets
+///////////////////////////////////////////// */
+body{font-size:100%;font-size:1em;font-size:13px;color:#333;word-wrap: break-word;}
+
+
+/*easyui*/
+.easyui-layout{min-width: 1000px;overflow: hidden;}
+.tabs-panels {padding:2px;}
+.easyui-textbox{width:150px;}
+.easyui-datebox{width:150px;}
+.easyui-combobox{width:150px;}
+.textbox{margin-right:5px;}
+.dialog-button{text-align: center;}
+
+
+/*custom*/
+.side-tree .tree-node{padding:5px 0px;}
+.side-tree li a{display: block;width: 100%;height: 100%;}
+.loading{position: absolute; z-index: 1000; top: 0px; left: 0px;width: 100%; height: 100%; background: #fff; text-align: center;}
+.ajax-loading-mask{position: absolute;left: 0;top: 0;width: 100%;height: 100%;opacity: 0.4;filter: alpha(opacity=40);display: none;background-color:#ddd;z-index:9999;}
+.ajax-loading-mask-msg{position: absolute;top: 50%;margin-top: -20px;padding: 10px 5px 10px 30px;width: auto;height: 16px;border-width: 2px;border-style: solid;background: #fff url('../images/load.gif') no-repeat scroll 5px center;z-index:10000;border-color: #ccc;}
+.button-wrap{padding:3px 0px;border-bottom: 1px solid #ddd;}
+.form-wrap{padding:5px;}
+.br{width:100%;height:5px;}
+.required{color:red;margin:0px 5px;}
+.toolbar a{float: left;}
+.table-wrap{padding:2px;}
+.datagrid-empty{color: red;}
+.copyright{text-align: center;line-height: 30px;}
+
+

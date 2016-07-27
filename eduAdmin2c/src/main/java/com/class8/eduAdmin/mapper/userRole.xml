@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.class8.eduAdmin.dao.UserRoleDao">
+	
+	<select id="findUserIdByRoleId" parameterType="int" resultType="int">
+		select user_id from edu_user_role where role_id = #{roleId}
+	</select>
+	
+	<select id="findRoleIdByUserId" parameterType="int" resultType="int">
+		select role_id from edu_user_role where user_id = #{userId}
+	</select>
+	
+	<insert id="saveUserRoles" parameterType="list">
+		insert into edu_user_role
+		(
+			user_id,role_id
+		)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.userId},#{item.roleId})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteUserRolesByUserId" parameterType="int">
+		delete from edu_user_role where user_id = #{userId}
+	</delete>
+	
+	<delete id="deleteUserRolesByUserIds" parameterType="list">
+		delete from edu_user_role where
+		<foreach collection="list" item="userId" separator="or">
+			user_id = #{userId}
+		</foreach>
+	</delete>
+	
+</mapper>

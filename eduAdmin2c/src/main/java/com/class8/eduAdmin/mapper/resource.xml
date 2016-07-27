@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.class8.eduAdmin.dao.ResourceDao">
+
+	<insert id="saveResource" parameterType="Resource">
+		insert into edu_resource
+		(
+			name,description,parent_id,url,type,permission,priority,icon_cls,status,creator,create_time
+		)
+		values
+		(
+			#{name},#{description},#{parentId},#{url},#{type},#{permission},#{priority},#{iconCls},#{status},#{creator},#{createTime}
+		)
+	</insert>
+	
+	<select id="findAllResources" resultType="Resource">
+		select 
+			id,name,description,parent_id as parentId,url,type,permission,priority,icon_cls as iconCls,status,creator,create_time as createTime,lastmodified,del_flag as delFlag
+		from edu_resource order by priority asc,create_time asc
+	</select>
+	
+	<select id="getResource" parameterType="int" resultType="Resource">
+		select id,name,description,parent_id as parentId,url,type,permission,priority,icon_cls as iconCls,status,creator,create_time as createTime,lastmodified,del_flag as delFlag from edu_user where id = #{resourceId}
+	</select>
+	
+	<update id="updateResource" parameterType="Resource">
+		update edu_resource set 
+			name = #{name},description = #{description},parent_id = #{parentId},url = #{url},type = #{type},permission = #{permission},priority = #{priority},icon_cls = #{iconCls},status = #{status}
+		where id = #{id}
+	</update>
+	
+	<select id="findMenuResources">
+		select 
+			id,name,description,parent_id as parentId,url,type,permission,priority,icon_cls as iconCls,status,creator,create_time as createTime,lastmodified,del_flag as delFlag
+		from edu_resource
+		where type = 0 and status = 0
+	</select>
+	
+	<delete id="deleteResources" parameterType="list">
+		delete from edu_resource where 
+		<foreach collection="list" item="resourceId" separator="or">
+			id = #{resourceId}
+		</foreach>
+	</delete>
+	
+	<select id="findResources" parameterType="list" resultType="Resource">
+		select 
+			id,name,description,parent_id as parentId,url,type,permission,priority,icon_cls as iconCls,status,creator,create_time as createTime,lastmodified,del_flag as delFlag
+		from edu_resource
+		<where>
+			<foreach collection="list" item="resourceId" separator="or">
+				id = #{resourceId}
+			</foreach>
+		</where>
+	</select>
+	
+</mapper>

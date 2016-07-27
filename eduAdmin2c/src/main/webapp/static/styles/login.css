@@ -1,0 +1,95 @@
+@CHARSET "UTF-8";
+body {
+	background: #ebebeb;
+}
+.header {
+	background: #008ead;
+	width: 100%;
+	height: 400px;
+}
+.login-box {
+	background: #FFF; 
+	margin: -100px auto auto;
+	border-image: none; 
+	width: 400px; 
+	text-align: center;
+}
+.login-box h1{
+	font-size: 24px;
+	color:#666;
+	padding:20px 0px 20px;
+}
+.login-box p {
+	overflow:hidden;
+	padding:10px 30px;
+}
+.login-box div {
+	height: 50px;
+    line-height: 30px;
+    border-top: 1px solid #e7e7e7;
+}
+.login-box .invalid {
+	margin-top: -10px;
+	text-align: left;
+	display: none;
+}
+.login-box .invalid i {
+	display: inline-block;
+    background: url("../images/login-logic-icons.png") no-repeat 0 0;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin: -2px 3px 0 0px;
+}
+.login-box .message span {
+	color:#f00;
+}
+.login-box .input {
+	font-size:12px;
+	font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","\9ED1\4F53",Arial,sans-serif;
+	border: 1px solid #d3d3d3;
+	padding: 10px 10px;
+	width: 290px;
+	border-radius: 4px;
+	padding-left: 38px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+}
+.login-box .input:focus {
+	border-color: #66afe9;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+}
+.login-box .username {
+	background: url('../images/login-locked-icon.png') no-repeat 15px center;
+}
+.login-box .password {
+	background: url('../images/login-key-icon.png') no-repeat 15px center;
+}
+.login-box .captacha {
+	float:left;
+	width:150px;
+	padding-left:15px;
+}
+.login-box p img {
+	display: block;
+	float: right;
+}
+.login-box .logging {
+	background: #008ead; 
+	padding: 5px 20px; 
+	border-radius: 4px; 
+	border: 1px solid #1a7598; 
+	border-image: none; 
+	color: #fff; 
+	font-weight: bold;
+	cursor: pointer;
+}
+.login-box a {
+	color: #ccc;
+	text-decoration: none;
+}

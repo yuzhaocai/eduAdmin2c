@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<!-- 
+		注意：
+			spring容器中仅允许最多定义一个PropertyPlaceholderConfigurer(或<context:property-placeholder/>)，其余的读会被spring忽略掉
+			因为在applicationContext-core.xml中已经定义了一个，所以这里的不起作用
+		解决办法：
+			.properties配置文件的加载全部放在主配置文件（applicatioContext-core.xml中加载）。
+	 -->
+	 <!--  
+	<context:component-scan base-package="com.class8.eduAdmin.radis"></context:component-scan>
+	-->
+	
+	<!-- 加载redis配置文件 -->
+	<context:property-placeholder location="classpath:redis.properties"/>
+	
+	<!-- Redis连接池配置对象 -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="50"></property>
+		<property name="maxIdle" value="8"></property>
+		<property name="maxWaitMillis" value="1000"></property>
+		<property name="testOnBorrow" value="true"></property>
+		<property name="testOnReturn" value="true"></property>
+	</bean>
+	
+	<!-- 
+		Redis连接池 
+			*JedisPool:是针对单个redis服务的连接池
+			*ShardedJedisPool:是一个分片形式，可以连接有主备的redis服务端(这种方式没有keys方法)
+	-->
+	<!--  
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+		<constructor-arg index="0" ref="jedisPoolConfig"></constructor-arg>
+		<constructor-arg index="1">
+			<list>
+				<bean class="redis.clients.jedis.JedisShardInfo">
+					<constructor-arg name="host" value="${redis.host}"></constructor-arg>
+					<constructor-arg name="port" value="${redis.port}"></constructor-arg>
+					<constructor-arg name="timeout" value="${redis.timeout}"></constructor-arg>
+					<constructor-arg name="weight" value="1"></constructor-arg>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	-->
+	
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg name="poolConfig" ref="jedisPoolConfig"></constructor-arg>
+		<constructor-arg name="host" value="${redis.host}"></constructor-arg>
+		<constructor-arg name="port" value="${redis.port}"></constructor-arg>
+		<constructor-arg name="timeout" value="${redis.timeout}"></constructor-arg>
+	</bean>
+	
+</beans>
